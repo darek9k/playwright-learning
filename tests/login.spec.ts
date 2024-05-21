@@ -17,7 +17,7 @@ test.describe('User login to Demobank', () => {
     // Act
     const loginPage = new LoginPage(page)
     await loginPage.loginInput.fill(userId);
-    await loginPage.userPassword.fill(userPassword);
+    await loginPage.passwordInput.fill(userPassword);
     await loginPage.loginButton.click();
 
     // Assert
@@ -30,8 +30,10 @@ test.describe('User login to Demobank', () => {
     const expectedErrorMessage = 'identyfikator ma min. 8 znaków';
 
     // Act
-    await page.getByTestId('login-input').fill(incorrectUserId);
-    await page.getByTestId('password-input').click();
+    const loginPage = new LoginPage(page);
+    await loginPage.loginInput.fill(incorrectUserId);
+    await loginPage.passwordInput.click();
+
 
     // Assert
     await expect(page.getByTestId('error-login-id')).toHaveText(
