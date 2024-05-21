@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { loginData } from '../test-data/login.data';
 import { PaymentPage } from '../pages/payment.page';
+import { LoginPage } from '../pages/login.page';
+import { PulpitPage } from '../pages/pulpit.page';
 
 test.describe('Payment tests', () => {
 
@@ -10,10 +12,13 @@ test.describe('Payment tests', () => {
     const userPassword = loginData.userPassword;
     
     await page.goto('/');
-    await page.getByTestId('login-input').fill(userId);
-    await page.getByTestId('password-input').fill(userPassword);
-    await page.getByTestId('login-button').click();
-    await page.getByRole('link', { name: 'płatności' }).click();
+    const loginPage = new LoginPage(page)
+    await loginPage.loginInput.fill(userId)
+    await loginPage.passwordInput.fill(userPassword)
+    await loginPage.loginButton.click()
+
+    const pulpitPage = new PulpitPage(page)
+    await pulpitPage.sideMenuComponent.paymentLink.click()
   });
 
   test('simple payment', async ({ page }) => {
@@ -27,6 +32,7 @@ test.describe('Payment tests', () => {
     await paymentPage.transferReceiver.fill(transferReceiver);
     await paymentPage.transferAccount.fill(transferAccount);
     await paymentPage.transferAmount.fill(transferAmount);
+    
     await paymentPage.transferButton.click();
     await paymentPage.actionCloseButton.click();
     // Assert
